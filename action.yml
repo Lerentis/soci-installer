@@ -35,7 +35,7 @@ runs:
         if [[ ${{ inputs.soci-release }} == "main" ]]; then
           log_info "installing soci via 'go install' from its main version"
           GOBIN=$(go env GOPATH)/bin
-          go install https://github.com/awslabs/soci-snapshotter/cmd/soci@main
+          go install github.com/awslabs/soci-snapshotter/cmd/soci@main
           ln -s $GOBIN/soci ${{ inputs.install-dir}}/soci
           exit 0
         fi
@@ -80,10 +80,6 @@ runs:
         cd /tmp
         curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${{ inputs.soci-release }}/${release_archive}" -o "/tmp/${release_archive}"
         curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${{ inputs.soci-release }}/${release_shasums}" -o "/tmp/${release_shasums}"
-        ls -alh /tmp
-        pwd
-        cat "${release_shasums}"
-        echo "https://github.com/awslabs/soci-snapshotter/releases/download/${{ inputs.soci-release }}/${release_archive}"
         sha256sum -c "${release_shasums}"; 
         tar xf "${release_archive}"
         $SUDO mv soci "${{ inputs.install-dir }}/soci"
