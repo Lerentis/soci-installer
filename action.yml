@@ -82,6 +82,8 @@ runs:
         curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${soci_release}/${release_shasums}" -o "/tmp/${release_shasums}"
         ls -alh /tmp
         pwd
+        cat "${release_shasums}"
+        echo "https://github.com/awslabs/soci-snapshotter/releases/download/${soci_release}/${release_archive}"
         sha256sum -c "${release_shasums}"; 
         tar xf "${release_archive}"
         $SUDO mv soci "${{ inputs.install-dir }}/soci"
