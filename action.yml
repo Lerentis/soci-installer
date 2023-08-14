@@ -31,15 +31,6 @@ runs:
         set -e
 
         mkdir -p ${{ inputs.install-dir }}
-
-        if [[ ${{ inputs.soci-release }} == "main" ]]; then
-          log_info "installing soci via 'go install' from its main version"
-          GOBIN=$(go env GOPATH)/bin
-          go install github.com/awslabs/soci-snapshotter/cmd/soci@main
-          ln -s $GOBIN/soci ${{ inputs.install-dir}}/soci
-          exit 0
-        fi
-
         _version=${{ inputs.soci-release }}
 
         case ${{ runner.os }} in
