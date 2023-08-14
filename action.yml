@@ -78,8 +78,10 @@ runs:
 
         current_dir=$(pwd)
         cd /tmp
-        curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${soci_release}/${release_archive}" -o "${release_archive}"
-        curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${soci_release}/${release_shasums}" -o "${release_shasums}"
+        curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${soci_release}/${release_archive}" -o "/tmp/${release_archive}"
+        curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${soci_release}/${release_shasums}" -o "/tmp/${release_shasums}"
+        ls -alh /tmp
+        pwd
         sha256sum -c "${release_shasums}"; 
         tar xf "${release_archive}"
         $SUDO mv soci "${{ inputs.install-dir }}/soci"
