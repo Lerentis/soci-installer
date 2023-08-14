@@ -1,0 +1,92 @@
+# action.yml
+name: soci-installer
+author: lerentis
+description: 'Installs soci and includes it in your path'
+branding:
+  icon: 'package'
+  color: 'blue'
+inputs:
+  soci-release:
+    description: 'soci release version to be installed'
+    required: false
+    default: 'v0.3.0'
+  install-dir:
+    description: 'Where to install the soci cli'
+    required: false
+    default: '$HOME/.soci'
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        #!/bin/bash
+        shopt -s expand_aliases
+        if [ -z "$NO_COLOR" ]; then
+          alias log_info="echo -e \"\033[1;32mINFO\033[0m:\""
+          alias log_error="echo -e \"\033[1;31mERROR\033[0m:\""
+        else
+          alias log_info="echo \"INFO:\""
+          alias log_error="echo \"ERROR:\""
+        fi
+        set -e
+
+        mkdir -p ${{ inputs.install-dir }}
+
+        if [[ ${{ inputs.soci-release }} == "main" ]]; then
+          log_info "installing soci via 'go install' from its main version"
+          GOBIN=$(go env GOPATH)/bin
+          go install https://github.com/awslabs/soci-snapshotter/cmd/soci@main
+          ln -s $GOBIN/soci ${{ inputs.install-dir}}/soci
+          exit 0
+        fi
+
+        _version=${{ inputs.soci-release }}
+
+        case ${{ runner.os }} in
+          Linux)
+            case ${{ runner.arch }} in
+              X64)
+                release_archive="soci-snapshotter-${_version:1}-linux-amd64-static.tar.gz"
+                release_shasums="${release_archive}.sha256sum"
+                ;;
+              ARM64)
+                release_archive="soci-snapshotter-${_version:1}-linux-arm64-static.tar.gz"
+                release_shasums="${release_archive}.sha256sum"
+                ;;
+              *)
+                log_error "unsupported architecture $arch"
+                exit 1
+                ;;
+            esac
+            ;;
+            *)
+              log_error "unsupported OS ${{ runner.os }}"
+              log_error "Only Linux binaries are available"
+              exit 1
+              ;;
+        esac
+
+        SUDO=
+        if command -v sudo >/dev/null; then
+          SUDO=sudo
+          log_info "Sudo functional. Beginngin system installation"
+        elif [ "$EUID" -eq 0 ]; then
+          log_info "Root permissions. Beginngin system installation"
+        else
+          log_info "Sudo not functional and not root. continue with user permissions"
+        fi
+
+        current_dir=$(pwd)
+        cd /tmp
+        curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${soci_release}/${release_archive}" -o "${release_archive}"
+        curl -sL "https://github.com/awslabs/soci-snapshotter/releases/download/${soci_release}/${release_shasums}" -o "${release_shasums}"
+        sha256sum -c "${release_shasums}"; 
+        tar xf "${release_archive}"
+        $SUDO mv soci "${{ inputs.install-dir }}/soci"
+        rm THIRD_PARTY_LICENSES NOTICE.md "${release_archive}" "${release_shasums}" soci-snapshotter-grpc
+        cd "${current_dir}"
+
+
+    - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+      run: echo "${{ inputs.install-dir }}" >> $GITHUB_PATH
+      shell: bash
