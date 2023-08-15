@@ -67,13 +67,15 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write # needed for signing the images with GitHub OIDC Token
 
     name: build-image
     steps:
       - uses: actions/checkout@v3.5.2
         with:
           fetch-depth: 1
+
+      - name: Set up containerd
+        uses: crazy-max/ghaction-setup-containerd@v2
 
       - name: Install soci
         uses: lerentis/soci-installer@v1.0.0
@@ -91,26 +93,28 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: docker_meta
-        uses: docker/metadata-action@v4.4.0
-        with:
-          images: ghcr.io/lerentis/test
-          tags: type=sha,format=long
-
-      - name: Build and Push container images
+      - name: Build container images
         uses: docker/build-push-action@v4.0.0
         id: build-and-push
         with:
           platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.docker_meta.outputs.tags }}
+          push: false
+          outputs: type=oci,dest=/tmp/image.tar
+          tags:
+            - latest
+
+      - name: Import image in containerd
+        run: |
+          sudo ctr i import --base-name ghcr.io/${{ github.repository }}/test-image --digests --all-platforms /tmp/image.tar
+
+      - name: Push image with containerd
+        run: |
+          sudo ctr i push --user "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}" ghcr.io/${{ github.repository }}/test-image:latest
 
       - name: Create and push soci index
         run: |
-          soci create "${TAGS}"
-          soci push "${TAGS}"
-        env:
-          TAGS: ${{ steps.docker_meta.outputs.tags }}
+          sudo soci create ghcr.io/${{ github.repository }}/test-image:latest
+          sudo soci push --user ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} ghcr.io/${{ github.repository }}/test-image:latest
 
 ```
 
