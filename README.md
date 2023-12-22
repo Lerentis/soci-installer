@@ -12,7 +12,7 @@ Add the following entry to your Github workflow YAML file:
 ```yaml
 uses: lerentis/soci-installer@v1.0.1
 with:
-  soci-release: 'v0.3.0' # optional
+  soci-release: 'v0.4.1' # optional
 ```
 
 Example using a pinned version:
@@ -29,7 +29,7 @@ jobs:
       - name: Install soci
         uses: lerentis/soci-installer@v1.0.1
         with:
-          soci-release: 'v0.3.0'
+          soci-release: 'v0.4.1'
       - name: Check install!
         run: soci --version
 ```
