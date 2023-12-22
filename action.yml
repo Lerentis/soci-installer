@@ -9,7 +9,7 @@ inputs:
   soci-release:
     description: 'soci release version to be installed'
     required: false
-    default: 'v0.4.1'
+    default: 'v0.4.0'
   install-dir:
     description: 'Where to install the soci cli'
     required: false
