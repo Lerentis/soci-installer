@@ -10,7 +10,7 @@ MacOS and Windows binaries are currently not build, therfore this action can not
 Add the following entry to your Github workflow YAML file:
 
 ```yaml
-uses: lerentis/soci-installer@v1.0.1
+uses: lerentis/soci-installer@v1.1.0
 with:
   soci-release: 'v0.4.0' # optional
 ```
@@ -27,7 +27,7 @@ jobs:
     name: Install soci
     steps:
       - name: Install soci
-        uses: lerentis/soci-installer@v1.0.1
+        uses: lerentis/soci-installer@v1.1.0
         with:
           soci-release: 'v0.4.0'
       - name: Check install!
@@ -46,7 +46,7 @@ jobs:
     name: Install soci
     steps:
       - name: Install soci
-        uses: lerentis/soci-installer@v1.0.1
+        uses: lerentis/soci-installer@v1.1.0
       - name: Check install!
         run: soci --version
 ```
@@ -78,7 +78,7 @@ jobs:
         uses: crazy-max/ghaction-setup-containerd@v2
 
       - name: Install soci
-        uses: lerentis/soci-installer@v1.0.1
+        uses: lerentis/soci-installer@v1.1.0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.1.0
