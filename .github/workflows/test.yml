@@ -15,7 +15,7 @@ jobs:
     permissions: {}
     name: Install soci and test presence in path
     steps:
-      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install soci
         uses: ./
       - name: Check install!
@@ -38,7 +38,7 @@ jobs:
     permissions: {}
     name: Try to install a wrong soci
     steps:
-      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install soci
         uses: ./
         with:
@@ -53,7 +53,7 @@ jobs:
     permissions: {}
     name: Install Custom soci and test presence in path
     steps:
-      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install soci
         uses: ./
         with:
@@ -77,7 +77,7 @@ jobs:
     permissions: {}
     name: Install Custom soci and test presence in path with custom root dir
     steps:
-      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install soci
         uses: ./
         with:
