@@ -60,9 +60,9 @@ runs:
         SUDO=
         if command -v sudo >/dev/null; then
           SUDO=sudo
-          log_info "Sudo functional. Beginngin system installation"
+          log_info "Sudo functional. Beginning system installation"
         elif [ "$EUID" -eq 0 ]; then
-          log_info "Root permissions. Beginngin system installation"
+          log_info "Root permissions. Beginning system installation"
         else
           log_info "Sudo not functional and not root. continue with user permissions"
         fi
